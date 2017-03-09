@@ -13,7 +13,7 @@ epsilon=.001;              % epsilon (non archimedian number for the BCC & CCR m
 % Load data from excel sheet
 % X as vector of inputs
 % Y as vector of outputs
-[~, X, Y] = loadExcel('../Data/DEA_Input_Data_file_2017.xls', [2,3], [4,5]);
+[DMU, X, Y] = loadExcel('../Data/DEA_Input_Data_file_2017.xls', [2,3], [4,5]);
 
 
 % extracts the number of DMUs, inputs and outputs;
@@ -139,8 +139,43 @@ end
 
 %% Generates the output file  "DEAresults.table";
 
-xlswrite('Pure_Results', round(Z,4));
-%xlswrite('Pure_Results', 'DEA Scores Analysis', 'BE3');
+%% Label Vector
+
+labels = [cell(1,1), cell(1,n), cell(1,m), cell(1,s), cell(1,1)];
+
+labels(1) = {'DMU'};
+
+for i=1:n
+    labels(i+1) = {[char(955), int2str(i)]};
+end
+
+for i=1:m
+    labels(n+i+1) = {['X slack ', int2str(i)]};
+end
+
+for i=1:s
+    labels(n+m+i+1) = {['Y slack ', int2str(i)]};
+end
+
+labels(n+m+i+2) = {'DEA Score'};
+
+
+
+%% Generates Output Excel file
+%xlswrite('Pure_Results', {labels(1,:); [DMU, round(Z,4)]});
+xlswrite('Pure_Results', labels(1,:), 'CCR-IO Results' );
+xlswrite('Pure_Results', [DMU, round(Z,4)], 'CCR-IO Results', 'A2')
+
+%% DEA scores analysis
+xlswrite('Pure_Results', {'DEA Scores Analysis'}, 'CCR-IO Results', 'BF3:BF3');
+xlswrite('Pure_Results', {'Average'}, 'CCR-IO Results', 'BF4:BF4');
+xlswrite('Pure_Results', {'=AVERAGE(BC1:BC50)'}, 'CCR-IO Results', 'BG4:BG4');
+xlswrite('Pure_Results', {'Min'}, 'CCR-IO Results', 'BF5:BF5');
+xlswrite('Pure_Results', {'=MIN(BC1:BC50)'}, 'CCR-IO Results', 'BG5:BG5');
+xlswrite('Pure_Results', {'Max'}, 'CCR-IO Results', 'BF6:BF6');
+xlswrite('Pure_Results', {'=MAX(BC1:BC50)'}, 'CCR-IO Results', 'BG6:BG6');
+
+
 
 % nameDMU;
 temp1 = 'DMU_';
