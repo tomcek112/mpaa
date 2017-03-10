@@ -139,44 +139,74 @@ end
 
 %% Generates the output file  "DEAresults.table";
 
+%% Excel constants
+
+fileName = '/Outputs/Pure_Results';
+sheet1Name = 'CCR-IO Results';
+sheet2Name = 'Peer Groups';
+
 %% Label Vector
 
 labels = [cell(1,1), cell(1,n), cell(1,m), cell(1,s), cell(1,1)];
 
+% First cell for DMU names
 labels(1) = {'DMU'};
 
+% Labels for intesity vector
 for i=1:n
     labels(i+1) = {[char(955), int2str(i)]};
 end
 
+% Labels for X slacks
 for i=1:m
     labels(n+i+1) = {['X slack ', int2str(i)]};
 end
 
+% Labels for Y slacks
 for i=1:s
     labels(n+m+i+1) = {['Y slack ', int2str(i)]};
 end
 
+% Last cell for DEA scores
 labels(n+m+i+2) = {'DEA Score'};
 
 
-
 %% Generates Output Excel file
-%xlswrite('Pure_Results', {labels(1,:); [DMU, round(Z,4)]});
-xlswrite('Pure_Results', labels(1,:), 'CCR-IO Results' );
-xlswrite('Pure_Results', [DMU, round(Z,4)], 'CCR-IO Results', 'A2')
+xlswrite(fileName, labels(1,:), sheet1Name );
+xlswrite(fileName, [DMU, round(Z,4)], sheet1Name, 'A2')
 
 %% DEA scores analysis
-xlswrite('Pure_Results', {'DEA Scores Analysis'}, 'CCR-IO Results', 'BF3:BF3');
-xlswrite('Pure_Results', {'Average'}, 'CCR-IO Results', 'BF4:BF4');
-xlswrite('Pure_Results', {'=AVERAGE(BC1:BC50)'}, 'CCR-IO Results', 'BG4:BG4');
-xlswrite('Pure_Results', {'Min'}, 'CCR-IO Results', 'BF5:BF5');
-xlswrite('Pure_Results', {'=MIN(BC1:BC50)'}, 'CCR-IO Results', 'BG5:BG5');
-xlswrite('Pure_Results', {'Max'}, 'CCR-IO Results', 'BF6:BF6');
-xlswrite('Pure_Results', {'=MAX(BC1:BC50)'}, 'CCR-IO Results', 'BG6:BG6');
+xlswrite(fileName, {'DEA Scores Analysis'}, sheet1Name, 'BF3:BF3');
+xlswrite(fileName, {'Average'}, sheet1Name, 'BF4:BF4');
+xlswrite(fileName, {'=AVERAGE(BD2:BD51)'}, sheet1Name, 'BG4:BG4');
+xlswrite(fileName, {'Standard Dev'}, sheet1Name, 'BF5:BF5');
+xlswrite(fileName, {'=STDEV.P(BD2:BD51)'}, sheet1Name, 'BG5:BG5');
+xlswrite(fileName, {'Min'}, sheet1Name, 'BF6:BF6');
+xlswrite(fileName, {'=MIN(BD2:BD51)'}, sheet1Name, 'BG6:BG6');
+xlswrite(fileName, {'Max'}, sheet1Name, 'BF7:BF7');
+xlswrite(fileName, {'=MAX(BD2:BD51)'}, sheet1Name, 'BG7:BG7');
 
+%% Peer group vector
 
+peers = cell(n,2);
+for a=1:n
+    for b=1:n
+        if Z(a,b) > 0.01
+            peers{a,1} = [peers{a,1}, Z(a,b)];
+            peers{a,2} = [peers{a,2}, b];
+        end
+    end
+end
 
+xlswrite(fileName, {'DMU', 'Peers'}, sheet2Name);
+xlswrite(fileName, DMU, sheet2Name, 'A2');
+temp = peers(:,2);
+for a=1:n
+    xlswrite(fileName, temp{a}, sheet2Name, ['B', int2str(a+1)]);
+end
+clear temp;
+
+%% stuff
 % nameDMU;
 temp1 = 'DMU_';
 temp2 = ones(n,1)*temp1;
