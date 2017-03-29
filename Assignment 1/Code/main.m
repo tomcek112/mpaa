@@ -14,4 +14,10 @@ disp('Done');
 disp('Running BCC-OO...')
 DEA('BCC', 'oo');
 disp('Done');
+disp('Running CCR-Dual-IO...')
+DEA('CCR-Dual', 'io');
+disp('Done');
+disp('Running CCR-Dual-OO...')
+DEA('CCR-Dual', 'oo');
+disp('Done');
 disp('Terminating...');
