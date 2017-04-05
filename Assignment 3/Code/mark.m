@@ -36,7 +36,7 @@ function [  ] = mark(  )
     
     covars = cov(returns');
     
-    H = (covars + vars);
+    H = (covars);
     Aeq = [averages; ones(1,n)];
     lb = zeros(1,n);
     
@@ -66,7 +66,7 @@ function [  ] = mark(  )
     size(pVars)
     size(fVals)
     size(Z)
-    xlswrite('Output', round(Z,4));
+    xlswrite('../Output/Portfolios', round(Z,4));
 
 end
 

@@ -11,7 +11,7 @@ function [ z, ret ] = bounds( returns, lambda )
     
     covars = cov(returns');
         
-    H = lambda*(covars + vars); 
+    H = lambda*(covars); 
     
     f = -(1-lambda)*(averages);
     
