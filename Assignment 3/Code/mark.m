@@ -58,10 +58,11 @@ function [  ] = mark(  )
     
     
     figure
-    %%plot(sigmaP,muP,'r','Linewidth', 1.5)
     hold on
-    %plot(sigEff,muEff,'b','Linewidth', 1.5)
     plot(pVars,fVals,'ko')
+    xlabel('Portfolio standard deviation')
+    ylabel('Portfolio return')
+    title('Efficient Frontier')
     
     size(pVars)
     size(fVals)
