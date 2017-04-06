@@ -88,19 +88,27 @@ function [ ] = mark( )
     end
     
     for i = 1:100
-        stockLabels(i,1) = {['Stock ', int2str(1)]};
+        stockLabels(i,1) = {['Stock ', int2str(i)]};
     end
     
-    xlswrite(fileName, labels, sheetName, 'A2');
-    xlswrite(fileName, stockLabels, sheetName, 'B1');  
+    xlswrite(fileName, labels(1,:), sheetName, 'B1');
+    pause(2)
+    xlswrite(fileName, stockLabels(:,1), sheetName, 'A2');  
+    pause(2)
     xlswrite(fileName, round(Z,4), sheetName, 'B2');
+    pause(2)
 
     
     %% Calculate correlation matrix
     
     corr = corrcoef(returns');
     
-    xlswrite(fileName, corr, 'Correlations');
+    
+    xlswrite(fileName, corr, 'Correlations', 'B2');
+    xlswrite(fileName, stockLabels(:,1)', 'Correlations', 'B1');
+    xlswrite(fileName, stockLabels(:,1), 'Correlations', 'A2');
+    
+    
     
 end
 
