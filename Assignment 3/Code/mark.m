@@ -1,6 +1,6 @@
-function [  ] = mark(  )
-%UNTITLED Summary of this function goes here
-%   Detailed explanation goes here
+function [ ] = mark( )
+    
+    
 
     returns = loadExcel('../Data/Stocks_Returns_Input_Data_File_2017.xls');
     
@@ -14,6 +14,9 @@ function [  ] = mark(  )
     
     averages = mean(returns');
     
+    % Lower bound fVal is a variance value. We are interested in the return
+    % so we multiply the stock composition by it's their returns to obtain
+    % the portfolio return
     lB = sum(lBvec.*averages');
         
     
@@ -36,32 +39,38 @@ function [  ] = mark(  )
     
     covars = cov(returns');
     
+    % Hessian matrix as covariances
     H = (covars);
     Aeq = [averages; ones(1,n)];
     lb = zeros(1,n);
     
-    fVals = zeros(1,30);
+    % Initialize containers for portfolio variances and portfolio stock
+    % compositions
     pVars = zeros(1,30); 
-    
     Z = zeros(100,30);
     
+    % Solve problems
     for i=1:30
+        % Set appropriate rmin
         beq=[cumStep(i); 1];
         [z, fVal] = quadprog(H,[],[],[],Aeq,beq,lb);
-        %fVals(1,i) = sum(z.*averages');
-        %fVals(1,i) = fVal;
-        fVals(1,i) = cumStep(i);
-        %pVars(1,i) = sum(z.*sqrt(vars'));
+        
+        % Quadprog returns fVal as (actual function value)/2
+        % Thus we multiply by 2 to get the actual variance
         pVars(1,i) = (fVal)*2;
+        
+        % Store portfolio stock composition
         Z(:,i) = z;
     end
     
     
+    %% Draw Graph
+    
     figure
     axis([0, 0.08, -0.01, 0.08])
     hold on
-    scatter(pVars,fVals,45,'r')
-    plot(pVars,fVals,'-r')
+    scatter(pVars,cumStep,45,'r')
+    plot(pVars,cumStep,'-r')
     s = scatter(vars,averages, 12, 'b', 'filled')
     xlabel('Portfolio variance')
     ylabel('Portfolio return')
@@ -86,5 +95,12 @@ function [  ] = mark(  )
     xlswrite(fileName, stockLabels, sheetName, 'B1');  
     xlswrite(fileName, round(Z,4), sheetName, 'B2');
 
+    
+    %% Calculate correlation matrix
+    
+    corr = corrcoef(returns');
+    
+    xlswrite(fileName, corr, 'Correlations');
+    
 end
 
