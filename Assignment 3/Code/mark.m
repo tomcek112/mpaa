@@ -10,11 +10,11 @@ function [  ] = mark(  )
     [~, uB] = bounds(returns, 0);
     
     % Lower bound
-    [rets, lB] = bounds(returns, 1);
+    [lBvec, ~] = bounds(returns, 1);
     
     averages = mean(returns');
     
-    lB = sum(rets.*averages');
+    lB = sum(lBvec.*averages');
         
     
     
@@ -60,14 +60,31 @@ function [  ] = mark(  )
     figure
     axis([0, 0.08, -0.01, 0.08])
     hold on
-    plot(pVars,fVals,'ko')
+    scatter(pVars,fVals,45,'r')
+    plot(pVars,fVals,'-r')
+    s = scatter(vars,averages, 12, 'b', 'filled')
     xlabel('Portfolio variance')
     ylabel('Portfolio return')
     title('Efficient Frontier')
         
-    lB
-    uB
-    xlswrite('../Output/Portfolios', round(Z,4));
+
+    %% Write into Excel file
+    fileName = '../Output/Portfolios';
+    sheetName = 'Portfolios';
+    labels = cell(1,30);
+    stockLabels = cell(100,1);
+    
+    for i = 1:30
+        labels(1,i) = {['Portfolio ', int2str(i)]};
+    end
+    
+    for i = 1:100
+        stockLabels(i,1) = {['Stock ', int2str(1)]};
+    end
+    
+    xlswrite(fileName, labels, sheetName, 'A2');
+    xlswrite(fileName, stockLabels, sheetName, 'B1');  
+    xlswrite(fileName, round(Z,4), sheetName, 'B2');
 
 end
 
