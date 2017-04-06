@@ -52,21 +52,21 @@ function [  ] = mark(  )
         %fVals(1,i) = fVal;
         fVals(1,i) = cumStep(i);
         %pVars(1,i) = sum(z.*sqrt(vars'));
-        pVars(1,i) = sqrt(fVal);
+        pVars(1,i) = (fVal)*2;
         Z(:,i) = z;
     end
     
     
     figure
+    axis([0, 0.08, -0.01, 0.08])
     hold on
     plot(pVars,fVals,'ko')
-    xlabel('Portfolio standard deviation')
+    xlabel('Portfolio variance')
     ylabel('Portfolio return')
     title('Efficient Frontier')
-    
-    size(pVars)
-    size(fVals)
-    size(Z)
+        
+    lB
+    uB
     xlswrite('../Output/Portfolios', round(Z,4));
 
 end
